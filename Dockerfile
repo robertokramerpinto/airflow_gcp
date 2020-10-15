@@ -78,6 +78,26 @@ COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
 
 RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 
+##################################
+# ---- Project Begins
+##################################
+# Copying dags folder to airflow dags main path
+COPY dags/ ${AIRFLOW_USER_HOME}/dags
+
+
+
+# -- Install python requirements.txt
+RUN mkdir -p /usr/local/app
+WORKDIR /usr/local/app
+COPY . .
+RUN python -m pip install --upgrade pip
+RUN pip install -r requirements.txt
+RUN python setup.py install
+
+##################################
+# ---- Project Ends
+##################################
+
 EXPOSE 8080 5555 8793
 
 USER airflow
